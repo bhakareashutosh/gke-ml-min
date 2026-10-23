@@ -50,6 +50,16 @@ flowchart LR
 
 > [!NOTE]
 > **Assumes** you already have a GKE cluster with Workload Identity and the GCS FUSE CSI driver enabled. Both are on by default in Autopilot.
+> ### 1. Create Cluster & Connect
+```bash
+# Create the GKE Autopilot cluster
+gcloud container clusters create-auto ml-cluster \
+  --region us-central1 \
+  --project gdg-test-458407
+# Fetch credentials for kubectl
+gcloud container clusters get-credentials ml-cluster \
+  --region us-central1 \
+  --project gdg-test-458407
 
 ---
 
