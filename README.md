@@ -80,6 +80,9 @@ kubectl create serviceaccount ml-sa
 # Let the Kubernetes service account read/write the bucket (Workload Identity, no keys)
 gcloud storage buckets add-iam-policy-binding gs://$BUCKET --role=roles/storage.objectUser \
   --member=principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$PROJECT_ID.svc.id.goog/subject/ns/default/sa/ml-sa
+
+gcloud storage buckets update gs://${PROJECT_ID}-ml --uniform-bucket-level-access
+
 ```
 
 ---
