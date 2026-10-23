@@ -115,6 +115,11 @@ kubectl port-forward svc/model-server 8080:80 &
 curl -s localhost:8080/generate -H 'Content-Type: application/json' \
   -d '{"prompt": "What is Kubernetes?", "max_tokens": 64}'
 ```
+| Endpoint | Method | URL | Description / Response |
+| :--- | :---: | :--- | :--- |
+| **Health Check** | `GET` | `http://localhost:8080/health` | Returns `{"status":"ok"}` |
+| **Interactive Docs** | `GET` | `http://localhost:8080/docs` | Swagger UI to test endpoints in your browser |
+| **Inference** | `POST` | `http://localhost:8080/generate` | Accepts prompt JSON and streams completion |
 
 ---
 
