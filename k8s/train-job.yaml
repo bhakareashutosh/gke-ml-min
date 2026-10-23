@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: train
+spec:
+  backoffLimit: 3                      # a restarted pod resumes from the last checkpoint
+  template:
+    metadata:
+      annotations:
+        gke-gcsfuse/volumes: "true"    # mounts the bucket via the GCS FUSE sidecar
+    spec:
+      serviceAccountName: ml-sa
+      restartPolicy: Never
+      containers:
+      - name: train
+        image: ${IMAGE}
+        command: ["python", "train.py"]
+        resources:
+          requests: {cpu: "4", memory: 8Gi}
+          limits: {memory: 8Gi}
+        volumeMounts:
+        - {name: data, mountPath: /data}
+      volumes:
+      - name: data
+        csi:
+          driver: gcsfuse.csi.storage.gke.io
+          volumeAttributes: {bucketName: "${BUCKET}", mountOptions: "implicit-dirs"}

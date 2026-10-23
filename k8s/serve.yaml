@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: model-server}
+  template:
+    metadata:
+      labels: {app: model-server}
+      annotations:
+        gke-gcsfuse/volumes: "true"
+    spec:
+      serviceAccountName: ml-sa
+      containers:
+      - name: server
+        image: ${IMAGE}
+        ports:
+        - containerPort: 8000
+        resources:
+          requests: {cpu: "2", memory: 2Gi}
+          limits: {memory: 2Gi}
+        readinessProbe:
+          httpGet: {path: /health, port: 8000}
+          initialDelaySeconds: 20
+        volumeMounts:
+        - {name: data, mountPath: /data, readOnly: true}
+      volumes:
+      - name: data
+        csi:
+          driver: gcsfuse.csi.storage.gke.io
+          readOnly: true
+          volumeAttributes: {bucketName: "${BUCKET}", mountOptions: "implicit-dirs"}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: model-server
+spec:
+  selector: {app: model-server}
+  ports:
+  - {port: 80, targetPort: 8000}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: model-server
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: model-server}
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target: {type: Utilization, averageUtilization: 70}
