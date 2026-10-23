@@ -55,13 +55,13 @@ flowchart LR
 # Create the GKE Autopilot cluster
 gcloud container clusters create-auto ml-cluster \
   --region us-central1 \
-  --project gdg-test-458407
+  --project your-project-id
 ```
 ```
 # Fetch credentials for kubectl
 gcloud container clusters get-credentials ml-cluster \
   --region us-central1 \
-  --project gdg-test-458407
+  --project your-project-id
 ```
 ---
 
