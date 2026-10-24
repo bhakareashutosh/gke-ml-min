@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>GKE ML Beginner Guide</title>
+<!--[if gte mso 9]>
+<xml>
+ <w:WordDocument>
+  <w:View>Print</w:View>
+  <w:Zoom>100</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+ </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+  @page {
+    size: 8.5in 11.0in;
+    margin: 1.0in 1.0in 1.0in 1.0in;
+    mso-header-margin: 0.5in;
+    mso-footer-margin: 0.5in;
+  }
+  body {
+    font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #1f2937;
+    background-color: #ffffff;
+  }
+  h1 {
+    font-size: 24pt;
+    color: #0f172a;
+    border-bottom: 2pt solid #1a73e8;
+    padding-bottom: 6pt;
+    margin-top: 18pt;
+    margin-bottom: 8pt;
+    font-weight: 700;
+  }
+  h2 {
+    font-size: 16pt;
+    color: #1e3a8a;
+    border-bottom: 1pt solid #cbd5e1;
+    padding-bottom: 4pt;
+    margin-top: 20pt;
+    margin-bottom: 8pt;
+    font-weight: 600;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 13pt;
+    color: #0369a1;
+    margin-top: 14pt;
+    margin-bottom: 6pt;
+    font-weight: 600;
+    page-break-after: avoid;
+  }
+  h4 {
+    font-size: 11pt;
+    color: #334155;
+    margin-top: 10pt;
+    margin-bottom: 4pt;
+    font-weight: 600;
+  }
+  p {
+    margin-top: 0pt;
+    margin-bottom: 8pt;
+  }
+  ul, ol {
+    margin-top: 0pt;
+    margin-bottom: 8pt;
+    padding-left: 20pt;
+  }
+  li {
+    margin-bottom: 4pt;
+  }
+  code {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9.5pt;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    padding: 1pt 4pt;
+    border-radius: 3pt;
+    border: 1px solid #e2e8f0;
+  }
+  pre {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 9.5pt;
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 10pt 12pt;
+    border-radius: 4pt;
+    overflow-x: auto;
+    margin-top: 6pt;
+    margin-bottom: 12pt;
+    line-height: 1.45;
+  }
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border: none;
+  }
+  .callout-note {
+    background-color: #eff6ff;
+    border-left: 4pt solid #3b82f6;
+    padding: 8pt 12pt;
+    margin: 10pt 0pt;
+    border-radius: 0 4pt 4pt 0;
+  }
+  .callout-tip {
+    background-color: #ecfdf5;
+    border-left: 4pt solid #10b981;
+    padding: 8pt 12pt;
+    margin: 10pt 0pt;
+    border-radius: 0 4pt 4pt 0;
+  }
+  .callout-warning {
+    background-color: #fffbeb;
+    border-left: 4pt solid #f59e0b;
+    padding: 8pt 12pt;
+    margin: 10pt 0pt;
+    border-radius: 0 4pt 4pt 0;
+  }
+  .callout-danger {
+    background-color: #fef2f2;
+    border-left: 4pt solid #ef4444;
+    padding: 8pt 12pt;
+    margin: 10pt 0pt;
+    border-radius: 0 4pt 4pt 0;
+  }
+  .callout-title {
+    font-weight: bold;
+    margin-bottom: 4pt;
+    display: block;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12pt 0pt;
+    font-size: 10pt;
+  }
+  th, td {
+    border: 1pt solid #cbd5e1;
+    padding: 6pt 8pt;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    font-weight: 600;
+  }
+  tr:nth-child(even) td {
+    background-color: #f8fafc;
+  }
+  .header-box {
+    background: #1e3a8a;
+    color: #ffffff;
+    padding: 20pt;
+    border-radius: 6pt;
+    margin-bottom: 20pt;
+  }
+  .header-box h1 {
+    color: #ffffff;
+    border: none;
+    margin: 0;
+    padding: 0;
+    font-size: 24pt;
+  }
+  .header-box p {
+    color: #e0f2fe;
+    font-size: 11pt;
+    margin-top: 8pt;
+    margin-bottom: 0;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2pt 6pt;
+    font-size: 8.5pt;
+    font-weight: bold;
+    border-radius: 3pt;
+    margin-right: 4pt;
+  }
+  .badge-blue { background-color: #dbeafe; color: #1e40af; }
+  .badge-green { background-color: #dcfce7; color: #166534; }
+  .badge-yellow { background-color: #fef3c7; color: #92400e; }
+</style>
+</head>
+<body>
+
+<div class="header-box">
+  <h1>End-to-End GKE Machine Learning Guide</h1>
+  <p><strong>From Clean Machine to Production:</strong> Complete Beginner Walkthrough for Google Cloud SDK, Kubernetes Plugins (kubectl, gke-gcloud-auth-plugin), Fine-Tuning SmolLM2-135M, and Autoscaled Serving.</p>
+</div>
+
+<div>
+  <span class="badge badge-blue">Platform: GKE Autopilot</span>
+  <span class="badge badge-green">Compute: CPU-Only (Zero GPU Cost)</span>
+  <span class="badge badge-yellow">Level: Absolute Beginner Friendly</span>
+</div>
+
+<h2>Table of Contents</h2>
+<ol>
+  <li><a href="#section-1">Understanding the Big Picture &amp; Project Structure</a></li>
+  <li><a href="#section-2">Prerequisites &amp; Google Cloud Account Setup</a></li>
+  <li><a href="#section-3">Step 1: Installing Google Cloud SDK (gcloud CLI)</a></li>
+  <li><a href="#section-4">Step 2: Installing Essential Plugins (kubectl &amp; gke-gcloud-auth-plugin)</a></li>
+  <li><a href="#section-5">Step 3: Enabling Required Google Cloud APIs</a></li>
+  <li><a href="#section-6">Step 4: Creating Your GKE Cluster &amp; Connecting kubectl</a></li>
+  <li><a href="#section-7">Step 5: Project Environment &amp; Storage Setup</a></li>
+  <li><a href="#section-8">Step 6: Building Container Image with Cloud Build</a></li>
+  <li><a href="#section-9">Step 7: Fine-Tuning the Model (Kubernetes Job)</a></li>
+  <li><a href="#section-10">Step 8: Serving the Model with FastAPI (Deployment + Service)</a></li>
+  <li><a href="#section-11">Step 9: Testing Autoscaling Under Load (HPA)</a></li>
+  <li><a href="#section-12">Step 10: Clean Up &amp; Avoiding Cloud Costs</a></li>
+  <li><a href="#section-13">Cost Optimization Tips</a></li>
+  <li><a href="#section-14">Troubleshooting &amp; Frequently Asked Questions (FAQ)</a></li>
+  <li><a href="#section-15">Quick Command Cheatsheet</a></li>
+</ol>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-1">1. Understanding the Big Picture &amp; Project Structure</h2>
+<p>In this guide, you will learn how to take a modern machine learning workflow and deploy it end-to-end on Google Cloud. You will fine-tune a small language model (<strong>SmolLM2-135M</strong>) on a CPU, save checkpoints directly to Google Cloud Storage (GCS), and host a live HTTP API using FastAPI that scales automatically when user traffic spikes.</p>
+
+<div class="callout-note">
+  <span class="callout-title">Core Architecture Flow:</span>
+  <ol>
+    <li><strong>Cloud Storage:</strong> <code>gs://$BUCKET</code> holds checkpoints and trained weights.</li>
+    <li><strong>Training Phase:</strong> A Kubernetes <strong>Job</strong> executes <code>train.py</code>, writing checkpoints every 50 steps directly to GCS via the GCS FUSE CSI driver.</li>
+    <li><strong>Serving Phase:</strong> A Kubernetes <strong>Deployment</strong> executes <code>serve.py</code> with FastAPI, mounting the bucket read-only and serving requests on Port 80.</li>
+    <li><strong>Autoscaling:</strong> A <strong>HorizontalPodAutoscaler (HPA)</strong> monitors CPU. When average usage exceeds 70%, it scales replicas from 1 up to 5 automatically.</li>
+  </ol>
+</div>
+
+<h3>Project File Structure:</h3>
+<pre><code>├── app/
+│   ├── Dockerfile          # Single container image for both train and serve
+│   ├── requirements.txt    # Lean CPU-optimized dependencies (PyTorch CPU, Transformers, FastAPI)
+│   ├── train.py            # Hugging Face training script with checkpoint resumption
+│   └── serve.py            # FastAPI inference server with greedy decoding
+└── k8s/
+    ├── train-job.yaml      # Kubernetes Job with GCS FUSE CSI mount
+    └── serve.yaml          # Deployment + Service + HorizontalPodAutoscaler (HPA)</code></pre>
+
+<h3>Key Terminology for Beginners:</h3>
+<ul>
+  <li><strong>Google Cloud Platform (GCP):</strong> Google's cloud computing infrastructure.</li>
+  <li><strong>gcloud CLI:</strong> The primary tool to create, manage, and configure GCP resources from your command prompt.</li>
+  <li><strong>Kubernetes (K8s):</strong> The industry-standard system for automating deployment, scaling, and management of containerized applications.</li>
+  <li><strong>GKE Autopilot:</strong> A hands-off, managed Kubernetes mode where Google provisions, configures, and secures nodes for you. You only pay for the pods you run!</li>
+  <li><strong>kubectl:</strong> The Kubernetes command-line interface used to apply configurations and monitor pods.</li>
+  <li><strong>gke-gcloud-auth-plugin:</strong> A mandatory Google security plugin that allows <code>kubectl</code> to authenticate with GKE clusters securely.</li>
+  <li><strong>GCS FUSE CSI Driver:</strong> A bridge that makes remote Google Cloud Storage buckets look like ordinary local folders (<code>/data</code>) inside your Kubernetes pods.</li>
+  <li><strong>SmolLM2-135M:</strong> A compact, efficient language model by Hugging Face (135 million parameters). It is small enough to train and run inference on standard <strong>CPUs</strong> in minutes without needing expensive GPUs!</li>
+</ul>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-2">2. Prerequisites &amp; Google Cloud Account Setup</h2>
+<h3>2.1 Create an Account</h3>
+<p>Go to <a href="https://console.cloud.google.com/">https://console.cloud.google.com/</a>. If you are new to Google Cloud, sign up to receive <strong>$300 in free trial credits</strong> for 90 days.</p>
+
+<h3>2.2 Create a Google Cloud Project</h3>
+<ol>
+  <li>In the Google Cloud Console, click the project dropdown in the top bar and select <strong>New Project</strong>.</li>
+  <li>Enter a project name (for example: <code>gke-ml-starter</code>).</li>
+  <li>Note your globally unique <strong>Project ID</strong> (e.g. <code>gke-ml-starter-452109</code>).</li>
+  <li>Go to <strong>Billing</strong> in the left navigation and ensure your billing account is linked to this project. Even with free credits, billing must be enabled to activate GKE and Cloud Build.</li>
+</ol>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-3">3. Step 1: Installing Google Cloud SDK (gcloud CLI)</h2>
+
+<h3>3.1 Installation on Windows (Recommended Method)</h3>
+<ol>
+  <li>Download the official installer: <br>
+  <a href="https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe"><strong>Download GoogleCloudSDKInstaller.exe</strong></a></li>
+  <li>Run the downloaded executable. Follow the setup wizard prompts.</li>
+  <li>Make sure the following boxes are checked on the final screen:
+    <ul>
+      <li><strong>Start Google Cloud SDK Shell</strong></li>
+      <li><strong>Run 'gcloud init'</strong></li>
+    </ul>
+  </li>
+  <li>Click <strong>Finish</strong>.</li>
+</ol>
+
+<div class="callout-tip">
+  <span class="callout-title">PowerShell Command Alternative (Windows):</span>
+  <p>You can also download and run the installer via PowerShell:</p>
+  <pre><code>(New-Object Net.WebClient).DownloadFile("https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe", "$env:TEMP\GoogleCloudSDKInstaller.exe")
+Start-Process -FilePath "$env:TEMP\GoogleCloudSDKInstaller.exe" -Wait</code></pre>
+</div>
+
+<h3>3.2 Installation on macOS &amp; Linux</h3>
+<p><strong>macOS (Homebrew):</strong></p>
+<pre><code>brew install --cask google-cloud-sdk</code></pre>
+
+<p><strong>Linux (Ubuntu / Debian):</strong></p>
+<pre><code>curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+sudo apt-get update &amp;&amp; sudo apt-get install google-cloud-cli</code></pre>
+
+<h3>3.3 Verify gcloud Installation</h3>
+<p>Open PowerShell or Terminal and run:</p>
+<pre><code>gcloud --version</code></pre>
+<p>Expected output:</p>
+<pre><code>Google Cloud SDK 510.0.0 (or newer)
+core ...
+gsutil ...</code></pre>
+
+<h3>3.4 Run gcloud init</h3>
+<pre><code>gcloud init</code></pre>
+<ol>
+  <li>When asked <code>You must log in to continue. Would you like to log in (Y/n)?</code>, press <strong>Y</strong>.</li>
+  <li>A browser window opens. Log in with your Google Account and click <strong>Allow</strong>.</li>
+  <li>Choose your Project ID from the numbered list.</li>
+  <li>Choose a default region, e.g. <code>us-central1</code>.</li>
+</ol>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-4">4. Step 2: Installing Essential Plugins (kubectl &amp; gke-gcloud-auth-plugin)</h2>
+
+<p>The core <code>gcloud</code> CLI does not include Kubernetes binaries by default. You need two crucial tools:</p>
+
+<h3>4.1 Install kubectl</h3>
+<p><code>kubectl</code> is the standard command-line tool used to control Kubernetes clusters.</p>
+<pre><code>gcloud components install kubectl</code></pre>
+<p>Press <strong>Y</strong> when prompted. Verify:</p>
+<pre><code>kubectl version --client</code></pre>
+
+<h3>4.2 Install gke-gcloud-auth-plugin (CRITICAL)</h3>
+<div class="callout-danger">
+  <span class="callout-title">Important Warning for Beginners:</span>
+  <p>In modern Kubernetes (v1.26+), Google Cloud retired the legacy authentication mechanism. If you do not install this plugin, every <code>kubectl</code> command will fail with: <br>
+  <code>Error: loading auth plugin: gke-gcloud-auth-plugin is missing</code>.</p>
+</div>
+
+<p>Install the authentication plugin with:</p>
+<pre><code>gcloud components install gke-gcloud-auth-plugin</code></pre>
+<p>Press <strong>Y</strong> when prompted. Verify:</p>
+<pre><code>gke-gcloud-auth-plugin --version</code></pre>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-5">5. Step 3: Enabling Required Google Cloud APIs</h2>
+<p>In Google Cloud, each service is disabled until enabled. Run this single command to turn on all four required services:</p>
+<pre><code>gcloud services enable container.googleapis.com \
+                       artifactregistry.googleapis.com \
+                       cloudbuild.googleapis.com \
+                       storage.googleapis.com</code></pre>
+
+<table>
+  <thead>
+    <tr>
+      <th>API Service</th>
+      <th>Name</th>
+      <th>Function in This Project</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>container.googleapis.com</code></td>
+      <td>Kubernetes Engine</td>
+      <td>Creates and hosts the GKE cluster for training and serving.</td>
+    </tr>
+    <tr>
+      <td><code>artifactregistry.googleapis.com</code></td>
+      <td>Artifact Registry</td>
+      <td>Private Docker registry storing your custom container image.</td>
+    </tr>
+    <tr>
+      <td><code>cloudbuild.googleapis.com</code></td>
+      <td>Cloud Build</td>
+      <td>Builds your container image in the cloud (no local Docker needed!).</td>
+    </tr>
+    <tr>
+      <td><code>storage.googleapis.com</code></td>
+      <td>Cloud Storage</td>
+      <td>Hosts the bucket for model checkpoints and final model weights.</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-6">6. Step 4: Creating Your GKE Cluster &amp; Connecting kubectl</h2>
+<p>We will create a <strong>GKE Autopilot</strong> cluster. Autopilot automatically manages node provisioning, security hardening, and enables Workload Identity and GCS FUSE CSI driver out-of-the-box!</p>
+
+<h3>6.1 Create the Autopilot Cluster</h3>
+<p><strong>PowerShell / Bash:</strong></p>
+<pre><code>gcloud container clusters create-auto ml-cluster \
+  --region us-central1 \
+  --project $PROJECT_ID</code></pre>
+<p><em>Note: Cluster creation typically takes 5 to 7 minutes.</em></p>
+
+<h3>6.2 Connect kubectl to the Cluster</h3>
+<pre><code>gcloud container clusters get-credentials ml-cluster \
+  --region us-central1 \
+  --project $PROJECT_ID</code></pre>
+
+<h3>6.3 Test Cluster Connection</h3>
+<pre><code>kubectl get nodes</code></pre>
+<p>You should see the node instances with status <code>Ready</code>.</p>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-7">7. Step 5: Project Environment &amp; Storage Setup</h2>
+
+<h3>7.1 Define Environment Variables</h3>
+
+<p><strong>On Windows (PowerShell):</strong></p>
+<pre><code>$PROJECT_ID = gcloud config get-value project
+$REGION = "us-central1"
+$BUCKET = "${PROJECT_ID}-ml"
+$IMAGE = "${REGION}-docker.pkg.dev/${PROJECT_ID}/ml/app:v1"
+$PROJECT_NUMBER = (gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
+
+Write-Host "Project ID:     $PROJECT_ID"
+Write-Host "Project Number: $PROJECT_NUMBER"
+Write-Host "Bucket:         $BUCKET"
+Write-Host "Image:          $IMAGE"</code></pre>
+
+<p><strong>On macOS / Linux (Bash):</strong></p>
+<pre><code>export PROJECT_ID=$(gcloud config get-value project)
+export REGION=us-central1
+export BUCKET=${PROJECT_ID}-ml
+export IMAGE=${REGION}-docker.pkg.dev/${PROJECT_ID}/ml/app:v1
+export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
+
+echo "Project ID:     $PROJECT_ID"
+echo "Project Number: $PROJECT_NUMBER"
+echo "Bucket:         $BUCKET"
+echo "Image:          $IMAGE"</code></pre>
+
+<h3>7.2 Create the Storage Bucket</h3>
+<pre><code>gcloud storage buckets create gs://$BUCKET --location=$REGION</code></pre>
+
+<h3>7.3 Create Artifact Registry Repository</h3>
+<pre><code>gcloud artifacts repositories create ml --repository-format=docker --location=$REGION</code></pre>
+
+<h3>7.4 Create Kubernetes Service Account</h3>
+<pre><code>kubectl create serviceaccount ml-sa</code></pre>
+
+<h3>7.5 Bind IAM Permissions (Workload Identity)</h3>
+<p>This allows your Kubernetes pods using <code>ml-sa</code> to read and write to your GCS bucket securely without any secret password keys:</p>
+
+<p><strong>On Windows (PowerShell):</strong></p>
+<pre><code>gcloud storage buckets add-iam-policy-binding gs://$BUCKET `
+  --role=roles/storage.objectUser `
+  --member="principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$PROJECT_ID.svc.id.goog/subject/ns/default/sa/ml-sa"</code></pre>
+
+<p><strong>On macOS / Linux (Bash):</strong></p>
+<pre><code>gcloud storage buckets add-iam-policy-binding gs://$BUCKET \
+  --role=roles/storage.objectUser \
+  --member=principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$PROJECT_ID.svc.id.goog/subject/ns/default/sa/ml-sa</code></pre>
+
+<h3>7.6 Enable Uniform Bucket-Level Access</h3>
+<p>Uniform bucket-level access disables legacy individual object ACLs and ensures all access permissions are managed cleanly and centrally via IAM:</p>
+<pre><code>gcloud storage buckets update gs://${PROJECT_ID}-ml --uniform-bucket-level-access</code></pre>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-8">8. Step 6: Building Container Image with Cloud Build</h2>
+<p>You do not need Docker installed locally! Google Cloud Build will package the <code>app/</code> directory (with <code>train.py</code>, <code>serve.py</code>, <code>Dockerfile</code>, and <code>requirements.txt</code>) directly in the cloud:</p>
+
+<pre><code>gcloud builds submit app --tag $IMAGE</code></pre>
+
+<p>This compiles PyTorch, Hugging Face Transformers, and FastAPI into a Docker container. When complete, the image is automatically stored in Artifact Registry.</p>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-9">9. Step 7: Fine-Tuning the Model (Kubernetes Job)</h2>
+<p>A Kubernetes Job runs a batch workload until completion. <code>k8s/train-job.yaml</code> requests 4 vCPUs and 8GB memory, fine-tuning SmolLM2-135M on 500 samples.</p>
+
+<h3>9.1 Deploy the Job</h3>
+
+<p><strong>On Windows (PowerShell):</strong></p>
+<pre><code>(Get-Content k8s\train-job.yaml) -replace '\$\{IMAGE\}', $IMAGE -replace '\$\{BUCKET\}', $BUCKET | kubectl apply -f -</code></pre>
+
+<p><strong>On macOS / Linux (Bash):</strong></p>
+<pre><code>envsubst &lt; k8s/train-job.yaml | kubectl apply -f -</code></pre>
+
+<h3>9.2 Monitor Job Logs</h3>
+<pre><code>kubectl get jobs
+kubectl logs -f job/train</code></pre>
+
+<div class="callout-tip">
+  <span class="callout-title">Resilience Feature: Checkpoint Resumption</span>
+  <p><code>train.py</code> saves a checkpoint to <code>gs://$BUCKET/checkpoints</code> every 50 steps. If the pod restarts, it automatically resumes training from the last saved checkpoint!</p>
+</div>
+
+<h3>9.3 Test Self-Healing Pod Failure Recovery</h3>
+<p>While training is running, simulate a pod crash in another terminal:</p>
+<pre><code>kubectl delete pod -l job-name=train</code></pre>
+<p>The Job controller will immediately detect the pod was deleted and restart it. You will see in the logs:</p>
+<pre><code>resume_from_checkpoint=True</code></pre>
+
+<h3>9.4 Verify Model in Cloud Storage</h3>
+<pre><code>gcloud storage ls gs://$BUCKET/model/</code></pre>
+<p>You should see <code>model.safetensors</code> and <code>tokenizer.json</code>.</p>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-10">10. Step 8: Serving the Model with FastAPI (Deployment + Service)</h2>
+<p>Now we deploy a long-running web service that loads the model from GCS into memory and exposes <code>/generate</code>, <code>/health</code>, and <code>/docs</code> endpoints.</p>
+
+<h3>10.1 Deploy the Server</h3>
+
+<p><strong>On Windows (PowerShell):</strong></p>
+<pre><code>(Get-Content k8s\serve.yaml) -replace '\$\{IMAGE\}', $IMAGE -replace '\$\{BUCKET\}', $BUCKET | kubectl apply -f -</code></pre>
+
+<p><strong>On macOS / Linux (Bash):</strong></p>
+<pre><code>envsubst &lt; k8s/serve.yaml | kubectl apply -f -</code></pre>
+
+<h3>10.2 Check Rollout Status</h3>
+<pre><code>kubectl rollout status deploy/model-server</code></pre>
+
+<h3>10.3 API Endpoints Reference Table</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Endpoint</th>
+      <th>Method</th>
+      <th>URL</th>
+      <th>Description / Response</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Health Check</strong></td>
+      <td><code>GET</code></td>
+      <td><code>http://localhost:8080/health</code></td>
+      <td>Returns <code>{"status":"ok"}</code> when the pod is alive.</td>
+    </tr>
+    <tr>
+      <td><strong>Interactive Docs</strong></td>
+      <td><code>GET</code></td>
+      <td><code>http://localhost:8080/docs</code></td>
+      <td>Swagger UI to test endpoints interactively in your web browser.</td>
+    </tr>
+    <tr>
+      <td><strong>Inference</strong></td>
+      <td><code>POST</code></td>
+      <td><code>http://localhost:8080/generate</code></td>
+      <td>Accepts prompt JSON and returns model completion.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>10.4 Test Inference Locally (Port-Forward)</h3>
+<p>In terminal 1:</p>
+<pre><code>kubectl port-forward svc/model-server 8080:80</code></pre>
+
+<p>In terminal 2, send a test inference request:</p>
+
+<p><strong>PowerShell:</strong></p>
+<pre><code>Invoke-RestMethod -Uri "http://localhost:8080/generate" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body '{"prompt": "What is Kubernetes?", "max_tokens": 64}' | ConvertTo-Json</code></pre>
+
+<p><strong>Bash / curl:</strong></p>
+<pre><code>curl -s localhost:8080/generate \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "What is Kubernetes?", "max_tokens": 64}'</code></pre>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-11">11. Step 9: Testing Autoscaling Under Load (HPA)</h2>
+<p>The Horizontal Pod Autoscaler (HPA) watches CPU usage. When average CPU exceeds 70%, it scales up to 5 replicas.</p>
+
+<h3>11.1 Watch HPA</h3>
+<pre><code>kubectl get hpa model-server --watch</code></pre>
+
+<h3>11.2 Generate Traffic</h3>
+
+<p><strong>PowerShell:</strong></p>
+<pre><code>1..150 | ForEach-Object {
+    Start-Job -ScriptBlock {
+        Invoke-RestMethod -Uri "http://localhost:8080/generate" -Method Post -ContentType "application/json" -Body '{"prompt": "Explain autoscaling", "max_tokens": 64}' | Out-Null
+    }
+} | Out-Null</code></pre>
+
+<p><strong>Bash:</strong></p>
+<pre><code>for i in $(seq 1 200); do
+  curl -s localhost:8080/generate -H 'Content-Type: application/json' \
+    -d '{"prompt":"Explain autoscaling","max_tokens":64}' >/dev/null &amp;
+done</code></pre>
+
+<p>Observe the <code>REPLICAS</code> count increase from 1 to 2, 3, or more in real time!</p>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-12">12. Step 10: Clean Up &amp; Avoiding Cloud Costs</h2>
+<p>Always tear down resources when done experimenting:</p>
+
+<pre><code># 1. Delete Kubernetes deployments and jobs
+kubectl delete -f k8s/serve.yaml --ignore-not-found
+kubectl delete job train
+
+# 2. Delete Storage Bucket
+gcloud storage rm -r gs://$BUCKET
+
+# 3. Delete Artifact Registry Docker Image
+gcloud artifacts repositories delete ml --location=$REGION --quiet
+
+# 4. Delete the GKE Cluster (Important: avoids hourly cluster charges!)
+gcloud container clusters delete ml-cluster --region=$REGION --quiet</code></pre>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-13">13. Cost Optimization Tips</h2>
+<div class="callout-tip">
+  <span class="callout-title">Practical Tips for Cost-Conscious Cloud Engineers:</span>
+  <ul>
+    <li><strong>Pay for training only while it runs:</strong> A Kubernetes Job's pods exit when done, so nothing keeps billing.</li>
+    <li><strong>Keep the model small:</strong> On CPU, a 135M-parameter model trains in minutes and serves fast; larger models need expensive GPUs.</li>
+    <li><strong>Set minReplicas to what you need:</strong> The HPA scales up on load and back down to the minimum when idle.</li>
+    <li><strong>Right-size requests:</strong> On Autopilot you are billed by pod requests, so match <code>cpu</code> and <code>memory</code> to what the pod actually uses (check with <code>kubectl top pod</code>).</li>
+  </ul>
+</div>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-14">14. Troubleshooting &amp; Frequently Asked Questions (FAQ)</h2>
+
+<h3>Q1: Error: loading auth plugin: gke-gcloud-auth-plugin is missing</h3>
+<p><strong>Solution:</strong> Run <code>gcloud components install gke-gcloud-auth-plugin</code>. On Windows, ensure your terminal is restarted so <code>PATH</code> updates.</p>
+
+<h3>Q2: 'envsubst' is not recognized on Windows</h3>
+<p><strong>Solution:</strong> Use the PowerShell one-liner provided throughout this guide: <br>
+<code>(Get-Content file.yaml) -replace '\$\{IMAGE\}', $IMAGE -replace '\$\{BUCKET\}', $BUCKET | kubectl apply -f -</code></p>
+
+<h3>Q3: Pod fails with PermissionDenied accessing GCS</h3>
+<p><strong>Solution:</strong> Verify Workload Identity IAM binding from Step 5.5. Check that your service account name <code>ml-sa</code> matches the <code>serviceAccountName: ml-sa</code> in your YAML files, and ensure uniform bucket-level access is enabled.</p>
+
+<h3>Q4: Pod is stuck in 'Pending' status</h3>
+<p><strong>Solution:</strong> In GKE Autopilot, when a pod requests 4 vCPUs or 8GB RAM, Autopilot automatically creates a new VM node to fit it. This takes 60 to 90 seconds. Run <code>kubectl get nodes</code> to see new nodes joining.</p>
+
+<hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20pt 0;">
+
+<h2 id="section-15">15. Quick Command Cheatsheet</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>PowerShell (Windows)</th>
+      <th>Bash (macOS / Linux)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Install kubectl</td>
+      <td><code>gcloud components install kubectl</code></td>
+      <td><code>gcloud components install kubectl</code></td>
+    </tr>
+    <tr>
+      <td>Install auth plugin</td>
+      <td><code>gcloud components install gke-gcloud-auth-plugin</code></td>
+      <td><code>gcloud components install gke-gcloud-auth-plugin</code></td>
+    </tr>
+    <tr>
+      <td>Create cluster</td>
+      <td><code>gcloud container clusters create-auto ml-cluster --region us-central1 --project $PROJECT_ID</code></td>
+      <td><code>gcloud container clusters create-auto ml-cluster --region us-central1 --project $PROJECT_ID</code></td>
+    </tr>
+    <tr>
+      <td>Connect kubectl</td>
+      <td><code>gcloud container clusters get-credentials ml-cluster --region us-central1 --project $PROJECT_ID</code></td>
+      <td><code>gcloud container clusters get-credentials ml-cluster --region us-central1 --project $PROJECT_ID</code></td>
+    </tr>
+    <tr>
+      <td>Uniform Bucket Access</td>
+      <td><code>gcloud storage buckets update gs://${PROJECT_ID}-ml --uniform-bucket-level-access</code></td>
+      <td><code>gcloud storage buckets update gs://${PROJECT_ID}-ml --uniform-bucket-level-access</code></td>
+    </tr>
+    <tr>
+      <td>Build image</td>
+      <td><code>gcloud builds submit app --tag $IMAGE</code></td>
+      <td><code>gcloud builds submit app --tag $IMAGE</code></td>
+    </tr>
+    <tr>
+      <td>Submit Train Job</td>
+      <td><code>(Get-Content k8s\train-job.yaml) -replace ... | kubectl apply -f -</code></td>
+      <td><code>envsubst &lt; k8s/train-job.yaml | kubectl apply -f -</code></td>
+    </tr>
+    <tr>
+      <td>Test Pod Recovery</td>
+      <td><code>kubectl delete pod -l job-name=train</code></td>
+      <td><code>kubectl delete pod -l job-name=train</code></td>
+    </tr>
+    <tr>
+      <td>Deploy Server</td>
+      <td><code>(Get-Content k8s\serve.yaml) -replace ... | kubectl apply -f -</code></td>
+      <td><code>envsubst &lt; k8s/serve.yaml | kubectl apply -f -</code></td>
+    </tr>
+    <tr>
+      <td>Port Forward</td>
+      <td><code>kubectl port-forward svc/model-server 8080:80</code></td>
+      <td><code>kubectl port-forward svc/model-server 8080:80</code></td>
+    </tr>
+    <tr>
+      <td>Interactive Docs</td>
+      <td>Open <code>http://localhost:8080/docs</code> in browser</td>
+      <td>Open <code>http://localhost:8080/docs</code> in browser</td>
+    </tr>
+    <tr>
+      <td>Delete Cluster</td>
+      <td><code>gcloud container clusters delete ml-cluster --region=$REGION --quiet</code></td>
+      <td><code>gcloud container clusters delete ml-cluster --region=$REGION --quiet</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p style="margin-top: 30pt; font-size: 9pt; color: #64748b; text-align: center;">
+  Google Kubernetes Engine (GKE) ML Minimal CPU-Only Guide &bull; Generated for Absolute Beginners
+</p>
+
+</body>
+</html>
